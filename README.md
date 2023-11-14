@@ -1,4 +1,4 @@
-Bosnian Football PRemiere league Fantasy Football Application
+Bosnian Football Premiere league Fantasy Football Application
 
 CONTRIBUTOR:
 Filip Ljoljic
