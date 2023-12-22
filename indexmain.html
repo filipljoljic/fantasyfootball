@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+    <style>
+    table, tr, td{
+        border: 1px solid black;
+    }
+    #users-table, #players-table{
+    max-width: 600px; /* Adjust as needed */
+    margin: auto; /* This centers the table */
+    }
+
+    #users-table th, #users-table td, #players-table th, #players-table td{
+        text-align: center; /* Center aligns the text in header and cells */
+        padding: 5px; /* Adjust padding for cell spacing */
+    }
+    </style>
+</head>
+<body>
+    <main id="spapp" role="main">
+        <section id="users"><h1>USERS</h1></section>
+        <section id="players"><h1>PLAYERS</h1></section>
+        <section id="teams"><h1>TEAMS</h1></section>
+    </main>
+
+    <!-- Bootstrap JS, Popper.js, and jQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+
+    <div>
+        <table id="users-table" class="table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Username</th>
+                    <th>Password</th>
+                    <th>Email</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Table rows will be inserted here by the script -->
+            </tbody>
+        </table>
+
+        <table id="players-table" class="table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Username</th>
+                    <th>Password</th>
+                    <th>Email</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Table rows will be inserted here by the script -->
+            </tbody>
+        </table>
+    </div>
+    
+    
+        
+    <script>
+        $.get('rest/users', function(data) {
+            var tbodyHtml = '';
+            for (var i = 0; i < data.length; i++) {
+                tbodyHtml += '<tr>' +
+                                '<td>' + data[i].ID + '</td>' +
+                                '<td>' + data[i].Username + '</td>' +
+                                '<td>' + data[i].Password + '</td>' +
+                                '<td>' + data[i].Email + '</td>' +
+                                '</tr>';
+            }
+            $("#users-table tbody").html(tbodyHtml); // Insert the rows into the tbody of the table
+        });
+
+        $.get('rest/players', function(data) {
+            
+            var tableBody = '';
+            for (var i = 0; i < data.length; i++) {
+                tableBody += '<tr>' +
+                                '<td>' + data[i].name + '</td>' +
+                                '<td>' + data[i].surname + '</td>' +
+                                '<td>' + data[i].position + '</td>' +
+                                '<td>' + data[i].nation + '</td>' +
+                                '</tr>';
+            }
+            $("#players-table tbody").html(tableBody); // Insert the rows into the tbody of the table
+        });
+    </script>
+</body>
+</html>
