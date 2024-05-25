@@ -9,7 +9,7 @@ class PlayersService extends BaseService{
 
     public function add($entity){
         parent::add($entity);
-        //send email
+        
     }
 }
 

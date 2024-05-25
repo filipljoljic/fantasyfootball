@@ -96,6 +96,28 @@
 
     <!-- Custom scripts for all pages-->
     <script src="assets/js/sb-admin-2.min.js"></script>
+    <script>
+        function register() {
+            $.ajax({
+                type: "POST",
+                url: "/register",
+                data: {
+                    firstName: $("#firstName").val(),
+                    lastName: $("#lastName").val(),
+                    email: $("#email").val(),
+                    password: $("#password").val(),
+                    repeatPassword: $("#repeatPassword").val()
+                },
+                success: function(response) {
+                    if (response.success) {
+                        window.location.href = "login.html";
+                    } else {
+                        alert(response.message);
+                    }
+                }
+            });
+        }
+    </script>
 
 </body>
 

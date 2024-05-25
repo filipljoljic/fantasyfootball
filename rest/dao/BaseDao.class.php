@@ -16,7 +16,7 @@ class BaseDao {
             $this->table_name = $table_name;
             $servername = Config::DB_HOST();
             $username = Config::DB_USERNAME();
-            $password = Config::DB_PASSWOARD();
+            $password = Config::DB_PASSWORD();
             $schema = Config::DB_SCHEMA();
             $this->conn = new PDO("mysql:host=$servername;dbname=$schema", $username, $password);
             $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
@@ -76,6 +76,12 @@ class BaseDao {
         $entity['id'] = $id;
         $stmt->execute($entity);
         return $entity;
+    } 
+
+    protected function query($query, $params){
+        $stmt = $this->conn->prepare($query);
+        $stmt->execute($params);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 }
 

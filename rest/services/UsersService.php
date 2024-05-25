@@ -8,8 +8,8 @@ class UsersService extends BaseService{
     }
 
     public function add($entity){
-        parent::add($entity);
-        //send email
+        $entity['password'] = md5($entity['password']);
+        return parent::add($entity);
     }
 }
 
