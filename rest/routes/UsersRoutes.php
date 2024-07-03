@@ -30,16 +30,6 @@ Flight::route("PUT /users/@id", function($id){
     Flight::json(['message' => "User edited", 'data' => Flight::users_service()->update($users, $id)]);
 });
 
-Flight::route("POST /register", function() {
-    try {
-        $request = Flight::request()->data->getData();
-        $result = Flight::users_service()->register($request);
-        Flight::json(['success' => true, 'message' => 'Registration successful']);
-    } catch (Exception $e) {
-        Flight::json(['success' => false, 'message' => $e->getMessage()], 500);
-    }
-});
-
 Flight::route("POST /login", function() {
     $login = Flight::request()->data->getData();
     $users = Flight::usersDao()->get_by_email($login['email']);
@@ -54,6 +44,21 @@ Flight::route("POST /login", function() {
         }
     } else {
         Flight::json(['message' => 'User not found'], 404);
+    }
+});
+
+Flight::route("POST /register", function(){
+    $request = Flight::request()->data->getData();
+    if (isset($request['username']) && isset($request['email']) && isset($request['password'])) {
+        $user = [
+            'username' => $request['username'],
+            'email' => $request['email'],
+            'password' => $request['password']
+        ];
+        $addedUser = Flight::users_service()->add($user);
+        Flight::json(['message' => "User registered", 'data' => $addedUser]);
+    } else {
+        Flight::json(['message' => "Invalid input"], 400);
     }
 });
 
