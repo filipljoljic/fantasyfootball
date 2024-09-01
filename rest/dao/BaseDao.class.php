@@ -26,6 +26,10 @@ class BaseDao {
             }
         } 
 
+    protected function getTableName() {
+        return $this->table_name;
+    }
+
     public function get_all(){
         $stmt = $this->conn->prepare("select * from " . $this->table_name);
         $stmt->execute();
@@ -82,6 +86,16 @@ class BaseDao {
         $stmt = $this->conn->prepare($query);
         $stmt->execute($params);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function insert($data) {
+        $keys = array_keys($data);
+        $columns = implode(",", $keys);
+        $placeholders = ":" . implode(", :", $keys);
+
+        $query = "INSERT INTO " . $this->table_name . " ($columns) VALUES ($placeholders)";
+        $stmt = $this->conn->prepare($query);
+        return $stmt->execute($data);
     }
 }
 

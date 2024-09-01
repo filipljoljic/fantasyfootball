@@ -19,7 +19,36 @@
 
     <!-- Custom styles for this template-->
     <link href="assets/css/sb-admin-2.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet"/>
 
+
+    <style>
+        #player-list {
+            max-height: 400px; /* Adjust the height as needed */
+            overflow-y: auto;  /* Adds vertical scrollbar */
+            overflow-x: hidden; /* Prevents horizontal scrolling */
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .player-card {
+            flex: 0 0 30%; /* Adjust the width of each card to fit within the div */
+            box-sizing: border-box;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #fff;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .player-card.selected {
+            border-color: green;
+            background-color: #f0f8ff;
+        }
+
+    </style>
 </head>
 
 <body id="page-top">
@@ -463,13 +492,12 @@
 
                     <div class="row">
 
-                        <!-- Area Chart -->
+                        <!-- Selection and viewing players -->
                         <div class="col-xl-8 col-lg-7">
                             <div class="card shadow mb-4">
                                 <!-- Card Header - Dropdown -->
-                                <div
-                                    class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                                    <h6 class="m-0 font-weight-bold text-primary">Earnings Overview</h6>
+                                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                                    <h6 class="m-0 font-weight-bold text-primary">Select Your Squad</h6>
                                     <div class="dropdown no-arrow">
                                         <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
                                             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -487,12 +515,12 @@
                                 </div>
                                 <!-- Card Body -->
                                 <div class="card-body">
-                                    <div class="chart-area">
-                                        <canvas id="myAreaChart"></canvas>
-                                    </div>
+                                    <div id="player-list" class="chart-area player-list"></div>
+                                    <button id="save-squad" class="btn btn-primary mt-3" disabled>Save Squad</button>
                                 </div>
                             </div>
                         </div>
+                        
 
                         <!-- Pie Chart -->
                         <div class="col-xl-4 col-lg-5">
@@ -739,6 +767,8 @@
 
     <!-- Bootstrap core JavaScript-->
     <script src="vendor/jquery/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.2/jquery.validate.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>  
     <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 
     <!-- Core plugin JavaScript-->
@@ -746,7 +776,11 @@
 
     <!-- Custom scripts for all pages-->
     <script src="assets/js/sb-admin-2.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.3/jquery.validate.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
     <script src="assets/js/user-service.js"></script>
+    <script src="assets/js/squad.js"></script>
 
     <!-- Page level plugins -->
     <script src="vendor/chart.js/Chart.min.js"></script>

@@ -1,5 +1,6 @@
 <?php
 
+
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
 
@@ -34,11 +35,10 @@ Flight::route("POST /login", function() {
     $login = Flight::request()->data->getData();
     $users = Flight::usersDao()->get_by_email($login['email']);
     if(count($users) > 0){
-        $users = $users[0];
-        if($users['Password'] == md5($login['password'])){  //password in the database is uppercase
-            unset($users['Password']);
-            $jwt = JWT::encode($users, Config::JWT_SECRET(), 'HS256');
-            Flight::json(['token' => $jwt]);
+        $user = $users[0];
+        if($user['Password'] == md5($login['password'])){  
+            $_SESSION['user_id'] = $user['ID'];  // Store user ID in session
+            Flight::json(['message' => 'Login successful.']);
         } else {
             Flight::json(['message' => 'Wrong password'], 404);
         }
@@ -46,6 +46,7 @@ Flight::route("POST /login", function() {
         Flight::json(['message' => 'User not found'], 404);
     }
 });
+
 
 Flight::route("POST /register", function(){
     $request = Flight::request()->data->getData();
