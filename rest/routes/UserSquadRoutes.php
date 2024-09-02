@@ -35,4 +35,28 @@ Flight::route("POST /user_squad", function() {
         Flight::json(['message' => 'You have already selected your squad and cannot modify it.'], 403);
     }
 });
+
+Flight::route("GET /user_selected_squad", function() {
+    if (session_status() == PHP_SESSION_NONE) {
+        session_start();
+    }
+    
+    $user_id = $_SESSION['user_id'] ?? null;
+    
+    if (!$user_id) {
+        Flight::json(['message' => 'User not authenticated.'], 401);
+        return;
+    }
+
+    $selected_squad = Flight::user_squad_service()->get_squad_by_user_id($user_id);
+
+    // Check if the user has selected any players
+    if (empty($selected_squad)) {
+        Flight::json(['message' => 'No players selected yet.'], 200);
+    } else {
+        Flight::json($selected_squad);
+    }
+});
+
+
 ?>

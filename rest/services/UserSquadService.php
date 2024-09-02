@@ -31,5 +31,8 @@ class UserSquadService extends BaseService {
 
         return true;
     }
+    public function get_squad_by_user_id($user_id) {
+        return $this->dao->get_squad_by_user_id($user_id);
+    }
 }
 ?>

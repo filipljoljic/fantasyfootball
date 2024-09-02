@@ -13,11 +13,23 @@ class UserSquadDao extends BaseDao {
     }
 
     public function get_squad_by_user_id($user_id) {
-        return $this->query(
-            "SELECT * FROM " . $this->getTableName() . " WHERE user_id = :user_id",
+        $players = $this->query(
+            "SELECT p.id, p.name, p.surname, p.position, p.age, p.team, p.points_per_game
+            FROM user_squad us
+            JOIN players p ON us.player_id = p.id
+            WHERE us.user_id = :user_id",
             ['user_id' => $user_id]
         );
+    
+        // Process the results in PHP to calculate the total points
+        foreach ($players as &$player) {
+            $pointsArray = json_decode($player['points_per_game'], true);
+            $player['total_points'] = array_sum($pointsArray);
+        }
+    
+        return $players;
     }
+
 
     // The insert method and other methods inherited from BaseDao
 }
