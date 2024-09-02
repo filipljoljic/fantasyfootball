@@ -26,6 +26,7 @@
       font-family: 'Font Awesome 5 Free';
       color: $gray-400;
     }
+    
     &.collapsed {
       border-radius: $card-border-radius;
       &::after {
