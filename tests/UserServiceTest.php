@@ -7,6 +7,7 @@ require_once __DIR__ . '/../rest/dao/UsersDao.class.php';
 
 class UserServiceTest extends TestCase {
 
+    /* Command for executing tests: vendor/bin/phpunit --configuration phpunittest.xml */ 
     private $userService;
 
     protected function setUp(): void {
