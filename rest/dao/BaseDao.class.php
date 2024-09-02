@@ -97,6 +97,12 @@ class BaseDao {
         $stmt = $this->conn->prepare($query);
         return $stmt->execute($data);
     }
+
+    public function get_user_by_email_test($email) {
+        $stmt = $this->conn->prepare("SELECT * FROM " . $this->table_name . " WHERE email = :email");
+        $stmt->execute(['email' => $email]);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
 }
 
 

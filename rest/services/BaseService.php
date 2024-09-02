@@ -25,6 +25,14 @@ class BaseService {
     public function delete($id){
         return $this->dao->delete($id);
     }
+
+    public function get_by_email($email) {
+        return $this->dao->get_by_email($email);
+    }
+
+    public function get_user_by_email_test($email) {
+        return $this->dao->get_user_by_email_test($email);
+    }
 }
 
 ?>

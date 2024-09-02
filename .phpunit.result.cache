@@ -1,0 +1,1 @@
+{"version":1,"defects":{"UserServiceTest::testRegisterUser":8,"UserServiceTest::testLoginUserSuccess":7,"UserServiceTest::testLoginUserFailure":8},"times":{"UserServiceTest::testRegisterUser":0.038,"UserServiceTest::testLoginUserSuccess":0.006,"UserServiceTest::testLoginUserFailure":0.01}}
