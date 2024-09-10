@@ -532,6 +532,16 @@
                                     <h3 id="total-points" class="text-center">0</h3> <!-- This will display the total points -->
                                 </div>
                             </div>
+
+                            <form id="create-league-form">
+                                <div class="form-group">
+                                    <label for="league-name">League Name:</label>
+                                    <input type="text" class="form-control" id="league-name" name="league_name" required>
+                                </div>
+                                <button type="submit" class="btn btn-primary">Create League</button>
+                            </form>
+
+                              
                         </div>
                         
                         
@@ -770,6 +780,43 @@
         console.log("Token found:", token);  // Log token for debugging
     }
 });
+
+$(document).ready(function () {
+        $('#create-league-form').submit(function (e) {
+            e.preventDefault(); // Prevent normal form submission
+
+            const leagueName = $('#league-name').val(); // Get the league name from the form
+            const token = localStorage.getItem("user_token");  // Assume you're storing the token in localStorage
+
+            if (!leagueName) {
+                alert("Please enter a league name.");
+                return;
+            }
+
+            // AJAX call to create the league
+            $.ajax({
+                type: 'POST',
+                url: 'rest/leagues/create',  // Backend API endpoint for league creation
+                contentType: 'application/json',
+                data: JSON.stringify({ league_name: leagueName }),  // Send the league name as JSON
+                headers: {
+                    'Authorization': 'Bearer ' + token  // Include authorization token
+                },
+                success: function (response) {
+                    alert('League created successfully!');
+                    console.log("Success response:", response);
+                    toastr.success("League created successfully!");
+                },
+                error: function (xhr, status, error) {
+                    console.log("Error status:", status);
+                    console.log("Error details:", error);
+                    console.log("XHR response:", xhr.responseText);
+                    alert('Error creating league: ' + xhr.responseText);
+                    toastr.error("Error creating league.");
+                }
+            });
+        });
+    });
 
     </script>
 
