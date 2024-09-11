@@ -47,6 +47,41 @@
             border-color: green;
             background-color: #f0f8ff;
         }
+        .league-cards {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .league-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            background-color: #f8f9fc;
+            border-radius: 5px;
+            box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .league-item h6 {
+            margin: 0;
+            font-weight: bold;
+            color: #4e73df;
+        }
+
+        .join-btn {
+            background-color: #1cc88a;
+            border: none;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .join-btn:hover {
+            background-color: #17a673;
+        }
+        
 
     </style>
 </head>
@@ -406,36 +441,27 @@
 
                         <!-- Earnings (Monthly) Card Example -->
                         <div class="col-xl-3 col-md-6 mb-4">
-                            <div class="card border-left-primary shadow h-100 py-2">
+                            <div class="card shadow mb-4">
+                                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                                    <h6 class="m-0 font-weight-bold text-primary">Total Points</h6>
+                                </div>
                                 <div class="card-body">
-                                    <div class="row no-gutters align-items-center">
-                                        <div class="col mr-2">
-                                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                                                Earnings (Monthly)</div>
-                                            <div class="h5 mb-0 font-weight-bold text-gray-800">$40,000</div>
-                                        </div>
-                                        <div class="col-auto">
-                                            <i class="fas fa-calendar fa-2x text-gray-300"></i>
-                                        </div>
-                                    </div>
+                                    <h3 id="total-points" class="text-center">0</h3> <!-- This will display the total points -->
                                 </div>
                             </div>
                         </div>
 
                         <!-- Earnings (Monthly) Card Example -->
                         <div class="col-xl-3 col-md-6 mb-4">
-                            <div class="card border-left-success shadow h-100 py-2">
-                                <div class="card-body">
-                                    <div class="row no-gutters align-items-center">
-                                        <div class="col mr-2">
-                                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                                                Earnings (Annual)</div>
-                                            <div class="h5 mb-0 font-weight-bold text-gray-800">$215,000</div>
+                            <div class="card shadow mb-4" style="height: auto;">
+                                <div class="card-body" style="padding: 15px;">
+                                    <form id="create-league-form" class="league-item">
+                                        <div class="form-group">
+                                            <label for="league-name" class="font-weight-bold text-primary">League Name</label>
+                                            <input type="text" class="form-control league-input" id="league-name" name="league_name" required placeholder="Enter League Name">
                                         </div>
-                                        <div class="col-auto">
-                                            <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
-                                        </div>
-                                    </div>
+                                        <button type="submit" class="btn join-btn">Create League</button>
+                                    </form>
                                 </div>
                             </div>
                         </div>
@@ -488,23 +514,23 @@
                         </div>
                     </div>
 
+
+
+
                     <!-- Content Row -->
 
                     <div class="row">
-
                         <!-- Selection and viewing players -->
                         <div class="col-xl-8 col-lg-7">
-                            <div class="card shadow mb-4">
+                            <div class="card shadow mb-4" style="height: auto;">
                                 <!-- Card Header - Dropdown -->
                                 <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
                                     <h6 class="m-0 font-weight-bold text-primary">Select Your Squad</h6>
                                     <div class="dropdown no-arrow">
-                                        <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
-                                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                             <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
                                         </a>
-                                        <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
-                                            aria-labelledby="dropdownMenuLink">
+                                        <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink">
                                             <div class="dropdown-header">Dropdown Header:</div>
                                             <a class="dropdown-item" href="#">Action</a>
                                             <a class="dropdown-item" href="#">Another action</a>
@@ -515,37 +541,31 @@
                                 </div>
                                 <!-- Card Body -->
                                 <div class="card-body">
-                                    <div id="player-list" class="chart-area player-list"></div>
+                                    <div id="player-list" class="chart-area player-list">
+                                        <!-- Players will be loaded here -->
+                                    </div>
                                     <button id="save-squad" class="btn btn-primary mt-3" disabled>Save Squad</button>
                                 </div>
                             </div>
                         </div>
-                        
-
-                        <!-- Pie Chart -->
+                    
+                        <!-- League List Section -->
                         <div class="col-xl-4 col-lg-5">
-                            <div class="card shadow mb-4">
+                            <div class="card shadow mb-4" style="height: auto;">
                                 <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                                    <h6 class="m-0 font-weight-bold text-primary">Total Points</h6>
+                                    <h6 class="m-0 font-weight-bold text-primary">Available Leagues</h6>
                                 </div>
-                                <div class="card-body">
-                                    <h3 id="total-points" class="text-center">0</h3> <!-- This will display the total points -->
+                                <div class="card-body" style="max-height: 400px; overflow-y: auto;">
+                                    <div id="leagues-list" class="league-cards">
+                                        <!-- Leagues will be dynamically loaded here -->
+                                    </div>
                                 </div>
                             </div>
-
-                            <form id="create-league-form">
-                                <div class="form-group">
-                                    <label for="league-name">League Name:</label>
-                                    <input type="text" class="form-control" id="league-name" name="league_name" required>
-                                </div>
-                                <button type="submit" class="btn btn-primary">Create League</button>
-                            </form>
-
-                              
                         </div>
-                        
-                        
                     </div>
+
+
+
 
                     <!-- Content Row -->
                     <div class="row">
@@ -782,41 +802,103 @@
 });
 
 $(document).ready(function () {
-        $('#create-league-form').submit(function (e) {
-            e.preventDefault(); // Prevent normal form submission
+    $('#create-league-form').submit(function (e) {
+        e.preventDefault(); // Prevent normal form submission
 
-            const leagueName = $('#league-name').val(); // Get the league name from the form
-            const token = localStorage.getItem("user_token");  // Assume you're storing the token in localStorage
+        const leagueName = $('#league-name').val(); // Get the league name from the form
+        const token = localStorage.getItem("user_token");  // Assume you're storing the token in localStorage
 
-            if (!leagueName) {
-                alert("Please enter a league name.");
-                return;
+        if (!leagueName) {
+            alert("Please enter a league name.");
+            return;
+        }
+
+        // AJAX call to create the league
+        $.ajax({
+            type: 'POST',
+            url: 'rest/leagues/create',  // Backend API endpoint for league creation
+            contentType: 'application/json',
+            data: JSON.stringify({ league_name: leagueName }),  // Send the league name as JSON
+            headers: {
+                'Authorization': 'Bearer ' + token  // Include authorization token
+            },
+            success: function (response) {
+                toastr.success("League created successfully!");
+                console.log("Success response:", response);
+            },
+            error: function (xhr, status, error) {
+                console.log("Error status:", status);
+                console.log("Error details:", error);
+                console.log("XHR response:", xhr.responseText);
+                toastr.error("Error creating league.");
             }
-
-            // AJAX call to create the league
-            $.ajax({
-                type: 'POST',
-                url: 'rest/leagues/create',  // Backend API endpoint for league creation
-                contentType: 'application/json',
-                data: JSON.stringify({ league_name: leagueName }),  // Send the league name as JSON
-                headers: {
-                    'Authorization': 'Bearer ' + token  // Include authorization token
-                },
-                success: function (response) {
-                    alert('League created successfully!');
-                    console.log("Success response:", response);
-                    toastr.success("League created successfully!");
-                },
-                error: function (xhr, status, error) {
-                    console.log("Error status:", status);
-                    console.log("Error details:", error);
-                    console.log("XHR response:", xhr.responseText);
-                    alert('Error creating league: ' + xhr.responseText);
-                    toastr.error("Error creating league.");
-                }
-            });
         });
     });
+
+
+    // Fetch all leagues on page load
+    function fetchLeagues() {
+        $.ajax({
+            type: 'GET',
+            url: 'rest/leagues',  // API endpoint to fetch all leagues
+            contentType: 'application/json',
+            success: function (leagues) {
+                // Empty the container before appending new leagues
+                $('#leagues-list').empty();
+
+                // Loop through each league and append it to the leagues-list container
+                leagues.forEach(function (league) {
+                    var leagueItem = `
+                        <div class="league-item" style="margin-bottom: 15px;">
+                            <span>${league.league_name}</span>
+                            <button class="btn btn-primary join-btn" data-league-id="${league.league_id}">Join</button>
+                        </div>
+                    `;
+                    $('#leagues-list').append(leagueItem);
+                });
+
+                // Attach click event to "Join" buttons
+                $('.join-btn').on('click', function () {
+                    var leagueId = $(this).data('league-id');
+                    
+                    // Call the joinLeague function when the "Join" button is clicked
+                    joinLeague(leagueId);
+                });
+            },
+            error: function (xhr, status, error) {
+                toastr.error("Error fetching leagues: " + error);  // Show error message using toastr
+            }
+        });
+    }
+
+    // Function to join a league when the "Join" button is clicked
+    function joinLeague(leagueId) {
+        var token = localStorage.getItem('user_token');  // Assuming you're storing the token in localStorage
+
+        $.ajax({
+            type: 'POST',
+            url: 'rest/league_members/join',  // API endpoint to join the league
+            contentType: 'application/json',
+            headers: {
+                'Authorization': 'Bearer ' + token  // Include authorization token
+            },
+            data: JSON.stringify({ league_id: leagueId }),  // Send the league ID in the request
+            success: function (response) {
+                if (response.status === 'error') {
+                    toastr.error(response.message);  // If there's an error, show it
+                } else {
+                    toastr.success("Successfully joined the league!");  // On success, show this message
+                }
+            },
+            error: function (xhr, status, error) {
+                  // Show error message using toastr
+            }
+        });
+    }
+
+    // Call the fetchLeagues function on page load
+    fetchLeagues();
+});
 
     </script>
 
