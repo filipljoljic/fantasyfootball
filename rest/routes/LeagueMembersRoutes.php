@@ -29,4 +29,20 @@ Flight::route("POST /league_members/join", function(){
     Flight::json($response);
 });
 
+Flight::route("GET /user/leagues", function() {
+    // Assuming the user is logged in
+    if (!isset($_SESSION['user_id'])) {
+        Flight::json(['status' => 'error', 'message' => 'User not logged in.'], 401);
+        return;
+    }
+
+    $user_id = $_SESSION['user_id'];
+    
+    // Fetch the leagues the user is a member of
+    $leagues = Flight::league_members_service()->get_user_leagues_with_members($user_id);
+    Flight::json($leagues);
+});
+
+
+
 ?>

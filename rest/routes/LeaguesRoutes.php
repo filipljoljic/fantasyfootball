@@ -38,4 +38,6 @@ Flight::route('POST /leagues/create', function() {
         Flight::json(['message' => 'Failed to create the league'], 400);
     }
 });
+
+
 ?>
