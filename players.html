@@ -245,30 +245,19 @@
 
                     <!-- Page Heading -->
                     <div class="d-sm-flex align-items-center justify-content-between mb-4">
-                        <h1 class="h3 mb-0 text-gray-800">Dashboard</h1>
+                        <h1 class="h3 mb-0 text-gray-800">Players</h1>
                     </div>
                     <div>
-                        <table id="users-table" class="table">
-                            <thead>
-                                <tr>
-                                    <th>ID</th>
-                                    <th>Username</th>
-                                    <th>Password</th>
-                                    <th>Email</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <!-- Table rows will be inserted here by the script -->
-                            </tbody>
-                        </table>
                 
                         <table id="players-table" class="table">
                             <thead>
                                 <tr>
-                                    <th>ID</th>
-                                    <th>Username</th>
-                                    <th>Password</th>
-                                    <th>Email</th>
+                                    <th>Name</th>
+                                    <th>Surname</th>
+                                    <th>Position</th>
+                                    <th>Nation</th>
+                                    <th>Points per game</th>
+                                    <th>Points overall</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -467,18 +456,6 @@
     <script src="assets/js/demo/chart-pie-demo.js"></script>
     <script>
 
-        $.get('rest/users', function(data) {
-            var tbodyHtml = '';
-            for (var i = 0; i < data.length; i++) {
-                tbodyHtml += '<tr>' +
-                                '<td>' + data[i].ID + '</td>' +
-                                '<td>' + data[i].Username + '</td>' +
-                                '<td>' + data[i].Password + '</td>' +
-                                '<td>' + data[i].Email + '</td>' +
-                                '</tr>';
-            }
-            $("#users-table tbody").html(tbodyHtml); // Insert the rows into the tbody of the table
-        });
 
         $.get('rest/players', function(data) {
             
@@ -489,6 +466,7 @@
                                 '<td>' + data[i].surname + '</td>' +
                                 '<td>' + data[i].position + '</td>' +
                                 '<td>' + data[i].nation + '</td>' +
+                                '<td>' + data[i].points_per_game + '</td>' +
                                 '</tr>';
             }
             $("#players-table tbody").html(tableBody); // Insert the rows into the tbody of the table
