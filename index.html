@@ -775,13 +775,17 @@
     <script src="assets/js/demo/chart-area-demo.js"></script>
     <script src="assets/js/demo/chart-pie-demo.js"></script>
     <script>
-        document.addEventListener("DOMContentLoaded", function() {
+
+document.addEventListener("DOMContentLoaded", function() {
     var token = localStorage.getItem('user_token');
-    if (!token) {
-        console.log("No token found, redirecting to login.");
+    var isAdmin = localStorage.getItem('is_admin');  // Get is_admin from localStorage
+    
+    if (!token || isAdmin == 1) {
+        // If there's no token or if admin tries to access user page, redirect to login
+        console.log("No token or admin trying to access user page, redirecting to login.");
         window.location.replace('login.html');
     } else {
-        console.log("Token found:", token);  // Log token for debugging
+        console.log("User token and privileges found:", token);  // Log token for debugging
     }
 });
 

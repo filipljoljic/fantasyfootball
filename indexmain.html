@@ -457,7 +457,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
     <script src="assets/js/user-service.js"></script>
-    <script src="assets/js/squad.js"></script>
 
     <!-- Page level plugins -->
     <script src="vendor/chart.js/Chart.min.js"></script>
@@ -466,6 +465,19 @@
     <script src="assets/js/demo/chart-area-demo.js"></script>
     <script src="assets/js/demo/chart-pie-demo.js"></script>
     <script>
+
+document.addEventListener("DOMContentLoaded", function() {
+    var token = localStorage.getItem('user_token');
+    var isAdmin = localStorage.getItem('is_admin');  // Get is_admin from localStorage
+    
+    if (!token || isAdmin != 1) {
+        // If no token or not admin, redirect to login
+        console.log("No token or not an admin, redirecting to login.");
+        window.location.replace('login.html');
+    } else {
+        console.log("Admin privileges found, loading admin dashboard.");
+    }
+});
 
         $.get('rest/users', function(data) {
             var tbodyHtml = '';

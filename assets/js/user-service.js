@@ -41,8 +41,30 @@ var UserService = {
             dataType: "json",
             success: function (result) {
                 console.log("Login successful, result:", result);
-                localStorage.setItem("user_token", result.token);
-                window.location.replace("index.html");
+                
+                // Ensure token and is_admin are stored in localStorage
+                if (result.token) {
+                    console.log("Token received in response:", result.is_admin);
+                    console.log("Is admin flag received in response:", result);
+                    localStorage.setItem("user_token", result.token);   // Store the token
+                    localStorage.setItem("is_admin", result.is_admin);  // Store the is_admin flag
+    
+                    // Log stored values for debugging
+                    console.log("Stored user_token:", localStorage.getItem("user_token"));
+                    console.log("Stored is_admin:", localStorage.getItem("is_admin"));
+                    
+                    // Redirect based on admin or regular user
+                    if (result.is_admin && result.is_admin === 1) {
+                        console.log("Admin detected, redirecting to indexmain.html");
+                        window.location.replace("indexmain.html");
+                    } else {
+                        console.log("Regular user detected, redirecting to index.html");
+                        window.location.replace("index.html");
+                    }
+                } else {
+                    console.error("No token received in response.");
+                    toastr.error("Failed to log in. Please try again.");
+                }
             },
             error: function (XMLHttpRequest, textStatus, errorThrown) {
                 console.error("Login failed:", textStatus, errorThrown);
