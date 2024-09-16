@@ -138,9 +138,11 @@
                 <div id="collapsePages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
                         <h6 class="collapse-header">Login Screens:</h6>
+                        <a class="collapse-item" href="index.html">Dashboard</a>
                         <a class="collapse-item" href="login.html">Login</a>
                         <a class="collapse-item" href="register.html">Register</a>
                         <a class="collapse-item" href="forgot-password.html">Logout</a>
+                        
                     </div>
                 </div>
             </li>
@@ -242,11 +244,18 @@
 
                 <!-- Begin Page Content -->
                 <div class="container-fluid">
-
-                    <!-- Page Heading -->
                     <div class="d-sm-flex align-items-center justify-content-between mb-4">
                         <h1 class="h3 mb-0 text-gray-800">Players</h1>
+                        <!-- Search Bar -->
+                        <div class="input-group" style="width: 400px;">
+                            <input type="text" id="player-search-input" class="form-control" placeholder="Search by name, position, age, nation">
+                            <div class="input-group-append">
+                                <button class="btn btn-primary" id="player-search-btn" type="button">Search</button>
+                            </div>
+                        </div>
                     </div>
+
+                    <!-- Page Heading -->
                     <div>
                 
                         <table id="players-table" class="table">
@@ -471,6 +480,46 @@
             }
             $("#players-table tbody").html(tableBody); // Insert the rows into the tbody of the table
         });
+
+        $(document).ready(function() {
+    // Fetch and display players
+    $.get('rest/players', function(data) {
+        populatePlayersTable(data); // Initial load of all players
+
+        // Handle the search functionality
+        $('#player-search-btn').on('click', function() {
+            var searchQuery = $('#player-search-input').val().toLowerCase();
+
+            // Filter players based on the search query
+            var filteredPlayers = data.filter(function(player) {
+                return (
+                    player.name.toLowerCase().includes(searchQuery) ||
+                    player.surname.toLowerCase().includes(searchQuery) ||
+                    player.position.toLowerCase().includes(searchQuery) ||
+                    player.nation.toLowerCase().includes(searchQuery)
+                );
+            });
+
+            // Populate the table with the filtered results
+            populatePlayersTable(filteredPlayers);
+        });
+    });
+
+    // Function to populate the players table
+    function populatePlayersTable(players) {
+        var tableBody = '';
+        for (var i = 0; i < players.length; i++) {
+            tableBody += '<tr>' +
+                            '<td>' + players[i].name + '</td>' +
+                            '<td>' + players[i].surname + '</td>' +
+                            '<td>' + players[i].position + '</td>' +
+                            '<td>' + players[i].nation + '</td>' +
+                            '<td>' + players[i].points_per_game + '</td>' +
+                         '</tr>';
+        }
+        $("#players-table tbody").html(tableBody); // Insert the rows into the tbody of the table
+    }
+});
 
     </script>
 
