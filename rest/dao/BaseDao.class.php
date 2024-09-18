@@ -16,13 +16,13 @@ class BaseDao {
             $this->table_name = $table_name;
             $host = "fantasyfootball-do-user-14289897-0.e.db.ondigitalocean.com";
             $user = "doadmin";
-            $pass = "AVNS_Z5eprPZcvtmA5_AafjB";
+            $password = "AVNS_Z5eprPZcvtmA5_AafjB";
             $schema = "fantasyfootball";
             $port = 25060;
 
             $options = array(
-                PDO::MYSQL_ATTR_SSL_CA => '../certs/ca-certificate.crt',
-                PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT => true,);
+                PDO::MYSQL_ATTR_SSL_CA => 'https://drive.google.com/file/d/1umYZqkkUZmcTRbTPI9W9cQMt1Wx2uomI/view?usp=sharing',
+                PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT => false,);
             $this->conn = new PDO("mysql:host=$host;port=$port;dbname=$schema", $user, $pass, $options);
             $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             echo "Connected";
