@@ -22,7 +22,7 @@ class BaseDao {
 
             $options = array(
                 PDO::MYSQL_ATTR_SSL_CA => '../../certs/ca-certificate.crt',
-                PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT => false,);
+                PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT => true,);
             $this->conn = new PDO("mysql:host=$host;port=$port;dbname=$schema", $user, $pass, $options);
             $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             echo "Connected";
