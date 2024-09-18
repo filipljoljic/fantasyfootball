@@ -16,7 +16,7 @@ class BaseDao {
             $this->table_name = $table_name;
             $host = "fantasyfootball-do-user-14289897-0.e.db.ondigitalocean.com";
             $user = "doadmin";
-            $pass = Config::DB_PASSWORD();
+            $pass = "AVNS_Z5eprPZcvtmA5_AafjB";
             $schema = "fantasyfootball";
             $port = 25060;
 
