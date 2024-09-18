@@ -14,17 +14,22 @@ class BaseDao {
     public function __construct($table_name){
         try {
             $this->table_name = $table_name;
-            $servername = Config::DB_HOST();
-            $username = Config::DB_USERNAME();
-            $password = Config::DB_PASSWORD();
-            $schema = Config::DB_SCHEMA();
-            $this->conn = new PDO("mysql:host=$servername;dbname=$schema", $username, $password);
+            $host = "fantasyfootball-do-user-14289897-0.e.db.ondigitalocean.com";
+            $user = "doadmin";
+            $pass = "AVNS_Z5eprPZcvtmA5_AafjB";
+            $schema = "fantasyfootball";
+            $port = 25060;
+
+            $options = array(
+                PDO::MYSQL_ATTR_SSL_CA => 'C:\xampp\htdocs\fantasyfootball\certs\ca-certificate.crt',
+                PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT => false,);
+            $this->conn = new PDO("mysql:host=$host;port=$port;dbname=$schema", $user, $pass, $options);
             $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             echo "Connected";
         }   catch(PDOException $e){
             echo "Failed: " . $e->getMessage();
             }
-        } 
+        }   
 
     protected function getTableName() {
         return $this->table_name;
