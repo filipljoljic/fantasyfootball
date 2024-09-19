@@ -650,10 +650,16 @@ $(document).ready(function () {
 $(document).ready(function () {
     // Function to fetch leagues the user has joined and their points
     function fetchUserLeaguesWithPoints() {
+        // Get the JWT token from localStorage or sessionStorage
+        var token = localStorage.getItem('user_token'); // Assuming you store the token in localStorage
+
         $.ajax({
             type: 'GET',
             url: 'rest/user/leagues',  // API endpoint to get user leagues with total points
             contentType: 'application/json',
+            headers: {
+                'Authorization': 'Bearer ' + token  // Include the Bearer token in the request headers
+            },
             success: function (leagues) {
                 // Empty the specific target div before appending new content
                 var leaguesContainer = $('#user-leagues-container'); // Target the specific div
