@@ -1,5 +1,6 @@
 $(document).ready(function() {
     const selectedPlayers = new Set();  // Track selected players
+    let allPlayers = [];  // Store all player data
 
     // Function to render player list as clickable cards
     function renderPlayerList(players) {
@@ -9,7 +10,7 @@ $(document).ready(function() {
         // Loop through each player and display their data
         players.forEach(function (player) {
             let points = {};
-    
+
             // Try parsing the points_per_game field
             try {
                 points = JSON.parse(player.points_per_game);
@@ -24,13 +25,12 @@ $(document).ready(function() {
                     totalPoints += points[game];  // Sum the points for each game
                 }
             }
-    
+
             // Create the player card HTML
             const playerHtml = `
-                <div class="player-card" data-player-id="${player.id}">
+                <div class="player-card" data-player-id="${player.id}" data-total-points="${totalPoints}">
                     <h5>${player.name} ${player.surname}</h5>
                     <p>Position: ${player.position}</p>
-                    <p>Nation: ${player.nation}</p>
                     <p>Team: ${player.team}</p>
                     <p>Total Points: ${totalPoints}</p>
                 </div>
@@ -41,12 +41,13 @@ $(document).ready(function() {
         // Attach click events to each player card
         $('.player-card').on('click', function() {
             const playerId = $(this).data('player-id');  // Get player ID from data attribute
-            togglePlayerSelection($(this), playerId);  // Pass the card and player ID to the toggle function
+            const totalPoints = $(this).data('total-points');  // Get total points from data attribute
+            togglePlayerSelection($(this), playerId, totalPoints);  // Pass the card and player ID to the toggle function
         });
     }
 
     // Function to toggle player selection
-    function togglePlayerSelection(card, playerId) {
+    function togglePlayerSelection(card, playerId, totalPoints) {
         if (selectedPlayers.has(playerId)) {
             selectedPlayers.delete(playerId);  // Deselect player
             card.removeClass('selected');
@@ -58,12 +59,30 @@ $(document).ready(function() {
             selectedPlayers.add(playerId);  // Select player
             card.addClass('selected');
         }
-        updateSaveButton();  // Update the save button state
+
+        // Update the total points and the save button state
+        updateSaveButton();
+        displayTotalPoints();
     }
 
     // Function to update the "Save Squad" button state
     function updateSaveButton() {
         $('#save-squad').prop('disabled', selectedPlayers.size !== 11);
+    }
+
+    // Function to display total points in the UI for the selected players
+    function displayTotalPoints() {
+        let totalPoints = 0;
+
+        // Loop through each selected player and sum their points
+        selectedPlayers.forEach(playerId => {
+            const playerCard = $(`[data-player-id="${playerId}"]`);  // Find the player's card
+            const points = playerCard.data('total-points');  // Get the player's total points
+            totalPoints += points;  // Add to the total points
+        });
+
+        console.log("Calculated Total Points:", totalPoints);  // Debugging log
+        $('#total-points').text(totalPoints);  // Update the total points in the UI
     }
 
     // Fetch the players when the page loads and render the list
@@ -72,6 +91,7 @@ $(document).ready(function() {
         type: 'GET',
         dataType: 'json',
         success: function(response) {
+            allPlayers = response;  // Store all players
             renderPlayerList(response);  // Render the players in the list
         },
         error: function(err) {
@@ -104,16 +124,17 @@ $(document).ready(function() {
             }
         });
     });
+
+    // Fetch the user's selected squad when the page loads
     $.ajax({
         url: 'rest/user_selected_squad',
         type: 'GET',
         dataType: 'json',
         success: function(response) {
-            console.log(response); // Log the response to see the structure
-            if (response.message === 'No players selected yet.') {
-                fetchAndDisplayAllPlayers();
+            if (response.length > 0) {
+                renderPlayerList(response);  // Render only the selected squad players
             } else {
-                renderPlayerList(response);
+                toastr.info('No players selected yet.');
             }
         },
         error: function(err) {
