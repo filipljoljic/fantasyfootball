@@ -1,12 +1,8 @@
 <IfModule mod_rewrite.c>
     RewriteEngine On
+    # Exclude static assets from being rewritten (CSS, JS, images)
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_URI} !\.(css|js|png|jpg|jpeg|gif|ico|svg|woff|woff2)$ [NC]
     RewriteRule ^(.*)$ index.php [QSA,L]
 </IfModule>
-
-# Allow access to the vendor directory
-<Directory "/vendor">
-    AllowOverride None
-    Require all granted
-</Directory>
