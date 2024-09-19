@@ -1,5 +1,7 @@
 <?php
 session_start();
+use Firebase\JWT\JWT;
+use Firebase\JWT\Key;
 
 // Route to get the current user's squad
 Flight::route("GET /user_squad", function() {
@@ -13,26 +15,39 @@ Flight::route("GET /user_squad", function() {
 
 // Route to save the current user's squad
 Flight::route("POST /user_squad", function() {
-    if (!isset($_SESSION['user_id'])) {
-        Flight::json(['message' => 'User not authenticated.'], 401);
-        return;
-    }
+    $headers = apache_request_headers();
+    
+    if (isset($headers['Authorization'])) {
+        $jwt_token = str_replace('Bearer ', '', $headers['Authorization']);
+        
+        try {
+            // Decode the JWT token
+            $secret_key = 'web';  // Use the same secret key as in your login
+            $decoded = JWT::decode($jwt_token, new Key($secret_key, 'HS256'));
+            
+            // Access user_id from the decoded token
+            $user_id = $decoded->user_id;
+            
+            $data = Flight::request()->data->getData();
+            $player_ids = $data['player_ids'] ?? null;
 
-    $user_id = $_SESSION['user_id'];
-    $data = Flight::request()->data->getData();
-    $player_ids = $data['player_ids'] ?? null;
+            if (!$player_ids || count($player_ids) !== 11) {
+                Flight::json(['message' => 'Exactly 11 players must be selected.'], 400);
+                return;
+            }
 
-    if (!$player_ids || count($player_ids) !== 11) {
-        Flight::json(['message' => 'Exactly 11 players must be selected.'], 400);
-        return;
-    }
+            $result = Flight::user_squad_service()->save_user_squad($user_id, $player_ids);
 
-    $result = Flight::user_squad_service()->save_user_squad($user_id, $player_ids);
-
-    if ($result) {
-        Flight::json(['message' => 'Squad saved successfully.']);
+            if ($result) {
+                Flight::json(['message' => 'Squad saved successfully.']);
+            } else {
+                Flight::json(['message' => 'You have already selected your squad and cannot modify it.'], 403);
+            }
+        } catch (Exception $e) {
+            Flight::json(['message' => 'Invalid token: ' . $e->getMessage()], 401);
+        }
     } else {
-        Flight::json(['message' => 'You have already selected your squad and cannot modify it.'], 403);
+        Flight::json(['message' => 'Authorization header not found.'], 401);
     }
 });
 
