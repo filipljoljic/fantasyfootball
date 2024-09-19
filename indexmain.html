@@ -301,7 +301,7 @@
                                 </div>
                                 <div class="modal-body">
                                     <form id="edit-user-form">
-                                        <input type="hidden" id="edit-user-id"> <!-- Hidden input to store the user ID -->
+                                        <input type="hidden" id="edit-user-id" name="edit-user-id"> <!-- Hidden input to store the user ID -->
                                         <div class="form-group">
                                             <label for="edit-username">Username:</label>
                                             <input type="text" id="edit-username" class="form-control">
@@ -539,8 +539,8 @@
                                     '<td>' + data[i].nation + '</td>' +
                                     '<td>' + data[i].points_per_game + '</td>' +
                                     '<td>' + data[i].team + '</td>' +
-                                    '<td><button class="btn btn-danger delete-player" data-id="' + data[i].ID + '">Delete</button></td>' +
-                                    '<td><button class="btn btn-primary edit-player" data-id="' + data[i].ID + '">Edit</button></td>' +
+                                    '<td><button class="btn btn-danger delete-player" data-id="' + data[i].id + '">Delete</button></td>' +
+                                    '<td><button class="btn btn-primary edit-player" data-id="' + data[i].id + '">Edit</button></td>' +
                                 '</tr>';
                 }
                 $("#players-table tbody").html(tableBody); // Insert the rows into the tbody of the table
@@ -557,9 +557,14 @@
         
             // Event delegation to handle edit user actions
             $(document).on("click", ".edit-user", function() {
-                var userId = $(this).data("id");
-                console.log("Editing user with ID:", userId);  // Check if the ID is passed correctly
-                editUser(userId);  // Open modal and fill in the form
+                var userId = $(this).data("id");  // Get the user ID from data-id attribute
+                console.log("Editing user with ID:", userId);  // For debugging: check if the ID is logged correctly
+                
+                if (userId) {
+                    editUser(userId);  // Pass userId to the edit function
+                } else {
+                    console.error("User ID is missing for edit operation.");
+                }
             });
         
             // Delete user function
@@ -582,31 +587,46 @@
             // Edit user function (trigger the modal and fill in the form)
             function editUser(userId) {
                 $.get('rest/users/' + userId, function(data) {
-                    console.log("Fetched user data for editing:", data);  // Log the fetched data for debugging
-                    $("#edit-user-id").val(data.ID);  // Make sure this sets the user ID in the hidden input field
-                    $("#edit-username").val(data.Username);
-                    $("#edit-email").val(data.Email);
-                    $("#edit-user-modal").modal("show");  // Show the modal
+                    console.log("Fetched user data for editing:", data);  // Debugging log
+                    
+                    if (Array.isArray(data) && data.length > 0) {
+                        // Access the first element of the array
+                        var user = data[0];
+
+                        // Set the fetched user data into the edit form fields
+                        $("#edit-user-id").val(user.ID);  // Set the user ID in the hidden input
+                        $("#edit-username").val(user.Username);
+                        $("#edit-email").val(user.Email);
+
+                        console.log("User ID set in hidden input:", $("#edit-user-id").val());  // Debugging log
+
+                        // Open the modal to show the form
+                        $("#edit-user-modal").modal("show");  // Open the modal for editing
+                    } else {
+                        console.error("No user data found for editing.");
+                    }
                 });
             }
     
             // Handle user update form submission
             $("#edit-user-form").on("submit", function(e) {
                 e.preventDefault();  // Prevent default form submission
-                var userId = $("#edit-user-id").val();  // Get the user ID from the hidden input field
                 
-                console.log("Submitting update for user with ID:", userId);  // Log the userId to ensure it's retrieved correctly
-    
+                var userId = $("#edit-user-id").val();  // Get the user ID from the hidden input
+                console.log("Submitting update for user with ID:", userId);  // For debugging
+
                 if (!userId) {
                     alert("User ID is missing, unable to update.");
                     return;
                 }
-    
+
+                // Prepare the updated user data
                 var updatedUser = {
                     username: $("#edit-username").val(),
                     email: $("#edit-email").val()
                 };
-    
+
+                // Make the PUT request to update the user
                 $.ajax({
                     url: 'rest/users/' + userId,  // Append the userId to the URL
                     type: 'PUT',
@@ -618,6 +638,7 @@
                     },
                     error: function(xhr, status, error) {
                         toastr.error("Error updating user: " + error);
+                        console.error("Update user error:", xhr.responseText);
                     }
                 });
             });
@@ -625,8 +646,12 @@
             // Attach player event handlers
             function attachPlayerEvents() {
                 $(document).on("click", ".delete-player", function() {
-                    var playerId = $(this).data("id");
-                    deletePlayer(playerId);
+                    var playerId = $(this).data("id");  // Get player ID from the data-id attribute
+                    if (playerId) {
+                        deletePlayer(playerId);  // Pass playerId to delete function
+                    } else {
+                        console.error("Player ID is undefined");
+                    }
                 });
         
                 $(document).on("click", ".edit-player", function() {
@@ -639,14 +664,15 @@
             function deletePlayer(playerId) {
                 if (confirm("Are you sure you want to delete this player?")) {
                     $.ajax({
-                        url: 'rest/players/' + playerId,
+                        url: 'rest/players/' + playerId,  // URL to send DELETE request to
                         type: 'DELETE',
                         success: function(result) {
                             toastr.success("Player deleted successfully.");
-                            location.reload(); // Reload players table
+                            location.reload(); // Reload players table to reflect the changes
                         },
                         error: function(xhr, status, error) {
                             toastr.error("Error deleting player: " + error);
+                            console.error("Error response:", xhr.responseText);
                         }
                     });
                 }
@@ -655,49 +681,77 @@
             // Edit player function
             function editPlayer(playerId) {
                 $.get('rest/players/' + playerId, function(data) {
-                    $("#edit-player-id").val(data.ID);
-                    $("#edit-player-name").val(data.name);
-                    $("#edit-player-surname").val(data.surname);
-                    $("#edit-player-position").val(data.position);
-                    $("#edit-player-nation").val(data.nation);
-                    $("#edit-player-points").val(data.points_per_game);
-                    $("#edit-player-team").val(data.team);
-                    $("#edit-player-modal").modal("show"); // Open the modal
+                    console.log("Fetched player data for editing:", data);  // Debugging log
+
+                    // Check if data is an array and has at least one element
+                    if (Array.isArray(data) && data.length > 0) {
+                        var player = data[0];  // Access the first element of the array
+
+                        // Set the player data into the form fields
+                        $("#edit-player-id").val(player.id);  // Hidden input to store the player ID
+                        $("#edit-player-name").val(player.name);
+                        $("#edit-player-surname").val(player.surname);
+                        $("#edit-player-foot").val(player.foot);
+                        $("#edit-player-position").val(player.position);
+                        $("#edit-player-detailed-position").val(player.detailed_position);
+                        $("#edit-player-age").val(player.age);
+                        $("#edit-player-nation").val(player.nation);
+                        $("#edit-player-points-per-game").val(player.points_per_game);
+                        $("#edit-player-team").val(player.team);
+
+                        // Open the modal
+                        $("#edit-player-modal").modal("show");
+                    } else {
+                        console.error("No player data found for editing.");
+                    }
                 });
             }
         
             // Handle player update form submission
             $("#edit-player-form").on("submit", function(e) {
-                e.preventDefault();
-                var playerId = $("#edit-player-id").val();
+                e.preventDefault();  // Prevent default form submission
+                
+                var playerId = $("#edit-player-id").val(); // Get the player ID from the hidden input
+                console.log("Submitting update for player with ID:", playerId);  // Debugging log
+
+                if (!playerId) {
+                    alert("Player ID is missing, unable to update.");
+                    return;
+                }
+
                 var updatedPlayer = {
                     name: $("#edit-player-name").val(),
                     surname: $("#edit-player-surname").val(),
+                    foot: $("#edit-player-foot").val(),
                     position: $("#edit-player-position").val(),
+                    detailed_position: $("#edit-player-detailed-position").val(),
+                    age: $("#edit-player-age").val(),
                     nation: $("#edit-player-nation").val(),
-                    points_per_game: $("#edit-player-points").val(),
+                    points_per_game: $("#edit-player-points-per-game").val(),
                     team: $("#edit-player-team").val()
                 };
-        
+
+                // Make the PUT request to update the player
                 $.ajax({
-                    url: 'rest/players/' + playerId,
+                    url: 'rest/players/' + playerId,  // Append the playerId to the URL
                     type: 'PUT',
                     data: JSON.stringify(updatedPlayer),
                     contentType: 'application/json',
                     success: function(result) {
                         toastr.success("Player updated successfully.");
-                        location.reload(); // Reload players table
+                        location.reload();  // Reload players table
                     },
                     error: function(xhr, status, error) {
                         toastr.error("Error updating player: " + error);
+                        console.error("Update player error:", xhr.responseText);
                     }
                 });
             });
         
             // Create new player form submission
-            $("#create-player-form").on("submit", function(e) {
-                e.preventDefault();
-    
+            $('#create-player-form').on('submit', function(e) {
+                e.preventDefault();  // Prevent default form submission
+
                 var newPlayer = {
                     name: $("#player-name").val(),
                     surname: $("#player-surname").val(),
@@ -709,19 +763,62 @@
                     points_per_game: $("#player-points-per-game").val(),
                     team: $("#player-team").val()
                 };
-    
+                console.log(JSON.stringify(newPlayer));  // Log the payload
+
+
                 $.ajax({
                     url: 'rest/players',
                     type: 'POST',
                     data: JSON.stringify(newPlayer),
                     contentType: 'application/json',
-                    success: function(result) {
-                        toastr.success("Player added successfully.");
-                        location.reload();  // Reload players table after successful addition
+                    success: function(response) {
+                        toastr.success("Player added successfully!");
+                        location.reload();  // Reload the page to refresh the list of players
                     },
                     error: function(xhr, status, error) {
                         toastr.error("Error adding player: " + error);
+                        console.error("Error details:", error);
                     }
+                });
+            });
+            $(document).ready(function() {
+                // Create user form submission
+                $("#create-user-form").on("submit", function(e) {
+                    e.preventDefault(); // Prevent the form from submitting the traditional way
+                    
+                    // Collect the form data
+                    var newUser = {
+                        username: $("#username").val(),
+                        email: $("#email").val(),
+                        password: $("#password").val()
+                    };
+
+                    // Log the new user data to verify the form submission
+                    console.log("Creating new user with data:", newUser);
+
+                    // Validate that all required fields are filled
+                    if (!newUser.username || !newUser.email || !newUser.password) {
+                        toastr.error("All fields are required.");
+                        return;
+                    }
+
+                    // Make an AJAX POST request to the backend to create the user
+                    $.ajax({
+                        url: 'rest/users', // This is the backend endpoint that should handle user creation
+                        type: 'POST',
+                        data: JSON.stringify(newUser), // Send the newUser object as JSON
+                        contentType: 'application/json',
+                        success: function(result) {
+                            // If successful, show success message and reload the table to reflect the new user
+                            toastr.success("User created successfully.");
+                            location.reload(); // Reload the page to refresh the users table
+                        },
+                        error: function(xhr, status, error) {
+                            // If there's an error, show it in the console and display an error message
+                            console.error("Error creating user:", xhr.responseText);
+                            toastr.error("Failed to create user: " + error);
+                        }
+                    });
                 });
             });
         });

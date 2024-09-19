@@ -15,11 +15,12 @@ Flight::route("GET /players/@id", function($id){
 
 Flight::route("DELETE /players/@id", function($id) {
     Flight::players_service()->delete($id);
-    Flight::json(["message" => "User has been deleted"]);
+    Flight::json(["message" => "Player has been deleted"]);
 });
 
 Flight::route("POST /players", function(){
     $request = Flight::request()->data->getData();
+    error_log(print_r($request, true));
     Flight::json(['message' => "Player added", 'data' => FLight::players_service()->add($request)]);
 });
 
