@@ -20,10 +20,10 @@ class BaseDao {
             $schema = "fantasyfootball";
             $port = 25060;
 
-            $this->conn = new PDO("mysql:host=$host;port=$port;dbname=$schema", $user, $pass, [
-                PDO::MYSQL_ATTR_SSL_CA => 'C:/xampp/htdocs/fantasyfootball/certs/ca-certificate.crt',
-                PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT => true,
-            ]);
+            $options = array(
+                PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT => true, // Only verify, no custom CA needed
+            );
+            $this->conn = new PDO("mysql:host=$host;port=$port;dbname=$schema", $user, $pass, $options);
             $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             echo "Connected";
         }   catch(PDOException $e){
