@@ -43,10 +43,10 @@ Flight::route("GET /user_selected_squad", function() {
     
     $user_id = $_SESSION['user_id'] ?? null;
     
-    if (!$user_id) {
-        Flight::json(['message' => 'User not authenticated.'], 401);
-        return;
-    }
+    // if (!$user_id) {
+    //     Flight::json(['message' => 'User not authenticated.'], 401);
+    //     return;
+    // }
 
     $selected_squad = Flight::user_squad_service()->get_squad_by_user_id($user_id);
 

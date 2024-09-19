@@ -82,10 +82,10 @@ Flight::route("POST /register", function(){
 
 Flight::route("GET /user/leagues", function() {
     // Check if the user is logged in
-    if (!isset($_SESSION['user_id'])) {
-        Flight::json(['status' => 'error', 'message' => 'User not logged in.'], 401);
-        return;
-    }
+    // if (!isset($_SESSION['user_id'])) {
+    //     Flight::json(['status' => 'error', 'message' => 'User not logged in.'], 401);
+    //     return;
+    // }
 
     $user_id = $_SESSION['user_id'];
 
